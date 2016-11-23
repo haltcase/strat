@@ -1,23 +1,30 @@
 {
   "name": "string-format",
-  "version": "0.5.0",
-  "description": "String formatting inspired by Python's str.format()",
-  "author": "David Chambers <dc@davidchambers.me>",
+  "version": "0.6.0",
+  "description": "Functional-ish JavaScript string formatting, with inspirations from Python.",
+  "author": "Bo Lingen <thecitycide@gmail.com>",
   "scripts": {
     "test": "ava"
   },
   "keywords": [
     "string",
     "formatting",
+    "python",
+    "currying",
+    "curried",
     "language",
-    "util"
+    "util",
+    "template",
+    "interpolation",
+    "es6",
+    "es2015"
   ],
-  "homepage": "https://github.com/davidchambers/string-format",
-  "bugs": "https://github.com/davidchambers/string-format/issues",
-  "license": "WTFPL",
+  "homepage": "https://github.com/citycide/string-format",
+  "bugs": "https://github.com/citycide/string-format/issues",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/davidchambers/string-format.git"
+    "url": "git+https://github.com/citycide/string-format.git"
   },
   "files": [
     "LICENSE",
