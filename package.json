@@ -3,6 +3,9 @@
   "version": "0.5.0",
   "description": "String formatting inspired by Python's str.format()",
   "author": "David Chambers <dc@davidchambers.me>",
+  "scripts": {
+    "test": "ava"
+  },
   "keywords": [
     "string",
     "formatting",
@@ -23,13 +26,19 @@
     "package.json"
   ],
   "devDependencies": {
-    "istanbul": "0.3.x",
     "mocha": "2.x.x",
     "ramda": "0.8.x",
     "xyz": "1.0.x"
+    "ava": "^0.17.0",
     "eslint": "^3.10.2",
     "eslint-config-standard": "^6.2.1",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^2.0.1"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*.js"
+    ],
+    "verbose": true
   }
 }
