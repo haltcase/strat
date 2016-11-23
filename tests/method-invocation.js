@@ -2,6 +2,7 @@ import format from '../index'
 import test from 'ava'
 
 let obj = {
+  echo: value => value,
   addFive: value => Number(value) + 5,
   xform (str, upper, reverse) {
     let output = str + ' ' + str
@@ -47,5 +48,5 @@ test('allows passing `_` to nullify an argument', t => {
 })
 
 test('treats `__` as an escaped `_`', t => {
-  t.is(format('{xform __}', obj), '_')
+  t.is(format('{echo __}', obj), '_')
 })
