@@ -2,7 +2,7 @@ import format from '../index'
 import test from 'ava'
 
 let obj = {
-  addFive: value => Number(value) + 5
+  addFive: value => Number(value) + 5,
   xform (str, upper, reverse) {
     let output = str + ' ' + str
     if (upper) output = output.toUpperCase()
