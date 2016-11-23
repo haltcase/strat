@@ -24,10 +24,12 @@
   ],
   "devDependencies": {
     "istanbul": "0.3.x",
-    "jscs": "2.1.x",
-    "jshint": "2.8.x",
     "mocha": "2.x.x",
     "ramda": "0.8.x",
     "xyz": "1.0.x"
+    "eslint": "^3.10.2",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^2.0.1"
   }
 }
