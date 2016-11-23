@@ -1,100 +1,110 @@
-/* global define, module */
+;(function (global) {
+  'use strict'
 
-;(function(global) {
+  const ERR_ARGS_ARRAY = 'replacements argument must be an array, not a parameter list'
+  const ERR_NUMBERING_MIX = 'cannot mix implicit & explicit formatting'
 
-  'use strict';
+  let defaultTo = (x, y) => y == null ? x : y
 
-  //  ValueError :: String -> Error
-  var ValueError = function(message) {
-    var err = new Error(message);
-    err.name = 'ValueError';
-    return err;
-  };
+  function create (transformers) {
+    return function reformat (template, replacements) {
+      if (replacements != null) {
+        if (!Array.isArray(replacements)) {
+          if (arguments.length > 2) {
+            throw new TypeError(ERR_ARGS_ARRAY)
+          }
 
-  //  defaultTo :: a,a? -> a
-  var defaultTo = function(x, y) {
-    return y == null ? x : y;
-  };
+          // single argument provided, cast as array
+          replacements = [replacements]
+        }
+      } else {
+        // return a curried function
+        let curried = reformat.bind(null, template)
+        Object.defineProperty(curried, 'raw', {
+          configurable: false,
+          enumerable: true,
+          get: () => template
+        })
+        return curried
+      }
 
-  //  create :: Object -> String,*... -> String
-  var create = function(transformers) {
-    return function(template) {
-      var args = Array.prototype.slice.call(arguments, 1);
-      var idx = 0;
-      var state = 'UNDEFINED';
+      let idx = 0
+      let state = 'UNDEFINED'
 
       return template.replace(
         /([{}])\1|[{](.*?)(?:!(.+?))?[}]/g,
-        function(match, literal, key, xf) {
-          if (literal != null) {
-            return literal;
-          }
+        function (match, literal, key, xf) {
+          if (literal != null) return literal
+
           if (key.length > 0) {
             if (state === 'IMPLICIT') {
-              throw ValueError('cannot switch from ' +
-                               'implicit to explicit numbering');
+              throw new Error(ERR_NUMBERING_MIX)
             }
-            state = 'EXPLICIT';
+
+            state = 'EXPLICIT'
           } else {
             if (state === 'EXPLICIT') {
-              throw ValueError('cannot switch from ' +
-                               'explicit to implicit numbering');
+              throw new Error(ERR_NUMBERING_MIX)
             }
-            state = 'IMPLICIT';
-            key = String(idx);
-            idx += 1;
+
+            state = 'IMPLICIT'
+            key = String(idx)
+            idx += 1
           }
-          var value = defaultTo('', lookup(args, key.split('.')));
+
+          let value = defaultTo('', lookup(replacements, key.split('.')))
 
           if (xf == null) {
-            return value;
-          } else if (Object.prototype.hasOwnProperty.call(transformers, xf)) {
-            return transformers[xf](value);
+            return value
+          } else if ({}.hasOwnProperty.call(transformers, xf)) {
+            return transformers[xf](value)
           } else {
-            throw ValueError('no transformer named "' + xf + '"');
+            throw new Error(`no transformer named '${xf}'`)
           }
         }
-      );
-    };
-  };
-
-  var lookup = function(obj, path) {
-    if (!/^\d+$/.test(path[0])) {
-      path = ['0'].concat(path);
+      )
     }
-    for (var idx = 0; idx < path.length; idx += 1) {
-      var key = path[idx];
-      var call = key.split(' ');
-      var fn = call[0];
-      var args = call.slice(1);
-      obj = typeof obj[fn] === 'function' ? obj[fn].apply(obj, args) : obj[key];
-    }
-    return obj;
-  };
-
-  //  format :: String,*... -> String
-  var format = create({});
-
-  //  format.create :: Object -> String,*... -> String
-  format.create = create;
-
-  //  format.extend :: Object,Object -> ()
-  format.extend = function(prototype, transformers) {
-    var $format = create(transformers);
-    prototype.format = function() {
-      var args = Array.prototype.slice.call(arguments);
-      args.unshift(this);
-      return $format.apply(global, args);
-    };
-  };
-
-  /* istanbul ignore else */
-  if (typeof module !== 'undefined') {
-    module.exports = format;
-  } else if (typeof define === 'function' && define.amd) {
-    define(function() { return format; });
-  } else {
-    global.format = format;
   }
 
-}.call(this, this));
+  function lookup (obj, path) {
+    if (!/^\d+$/.test(path[0])) {
+      path = ['0'].concat(path)
+    }
+
+    for (let idx = 0; idx < path.length; idx += 1) {
+      let key = path[idx]
+      let keyArray = key.split(' ')
+      let fn = keyArray[0]
+      let args = keyArray.slice(1)
+      obj = typeof obj[fn] === 'function'
+        ? obj[fn].apply(obj, args)
+        : obj[key]
+    }
+
+    return obj
+  }
+
+  let format = create({})
+
+  format.create = create
+
+  format.extend = function (prototype, transformers) {
+    let $format = create(transformers)
+    prototype.format = function (replacements) {
+      return $format.apply(global, [this, replacements])
+    }
+  }
+
+  format.errors = {
+    ERR_ARGS_ARRAY,
+    ERR_NUMBERING_MIX
+  }
+
+  if (typeof module !== 'undefined') {
+    module.exports = format
+  } else if (typeof define === 'function' && define.amd) {
+    define(() => format)
+  } else {
+    global.format = format
+  }
+}.call(this, this))
