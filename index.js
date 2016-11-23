@@ -75,13 +75,24 @@
       let key = path[idx]
       let keyArray = key.split(' ')
       let fn = keyArray[0]
-      let args = keyArray.slice(1)
       obj = typeof obj[fn] === 'function'
-        ? obj[fn].apply(obj, args)
+        ? obj[fn].apply(obj, parseMethodArgs(keyArray))
         : obj[key]
     }
 
     return obj
+  }
+  
+  function parseMethodArgs (keyArray) {
+  	return keyArray
+    	.slice(1)
+      .join(' ')
+      .split(/,\s*/g)
+      .map(v => {
+        if (v === '_') return null
+        if (v === '__') return '_'
+        return v
+      })
   }
 
   let format = create({})
