@@ -9,7 +9,9 @@ It takes inspiration from Python's [`str.format()`][1] and began as a fork of
 [`string-format`](https://github.com/davidchambers/string-format) before diverging
 with ES2015 source and an auto-curried `format` function.
 
-`npm install strat`
+```console
+npm install strat
+```
 
 ### View from the top
 
@@ -53,7 +55,9 @@ _NOTE: strat requires an environment supporting ES2015 syntax like `let` and arr
 
 1.  Install:
 
-`npm install strat`
+```console
+npm install strat
+```
 
 2.  Import:
 
@@ -224,7 +228,8 @@ format('Definitely watch {movieSequel.toUpperCase}', reacher)
 // -> 'Definitely watch JACK REACHER: NEVER GO BACK'
 ```
 
-To pass arguments to a method, pass them as a space delimited list:
+To pass arguments to a method, pass them as a comma delimited list, with
+a space after the method name:
 
 ```javascript
 let person = {
@@ -239,8 +244,15 @@ let person = {
   }
 }
 
-format('Average Joe {react true indifferent}.', person)
+format('Average Joe {react true, indifferent}.', person)
 // -> 'Average Joe rolled his eyes.'
+```
+
+Use `_` to pass a `null` value in the argument list.
+
+```javascript
+format('Average Joe {react _, mad}.', person)
+// -> 'Average Joe broke stuff.'
 ```
 
 ### `format.extend(object: Object, transformers?: { ...functions })`
@@ -284,4 +296,3 @@ $ npm test
 
 
 [1]: http://docs.python.org/library/stdtypes.html#str.format
-[2]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
