@@ -1,5 +1,5 @@
 {
-  "name": "string-format",
+  "name": "strat",
   "version": "0.6.0",
   "description": "Functional-ish JavaScript string formatting, with inspirations from Python.",
   "author": "Bo Lingen <thecitycide@gmail.com>",
@@ -19,12 +19,12 @@
     "es6",
     "es2015"
   ],
-  "homepage": "https://github.com/citycide/string-format",
-  "bugs": "https://github.com/citycide/string-format/issues",
+  "homepage": "https://github.com/citycide/strat",
+  "bugs": "https://github.com/citycide/strat/issues",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/citycide/string-format.git"
+    "url": "git+https://github.com/citycide/strat.git"
   },
   "files": [
     "LICENSE",
