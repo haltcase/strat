@@ -248,7 +248,10 @@ format('Average Joe {react true, indifferent}.', person)
 // -> 'Average Joe rolled his eyes.'
 ```
 
-Use `_` to pass a `null` value in the argument list.
+Note that all arguments are passed as strings, so you'll need to parse them
+as needed if you need, for example, a number  or boolean.
+
+However, you can use `_` to pass the falsy `null` value in the argument list:
 
 ```javascript
 format('Average Joe {react _, mad}.', person)
