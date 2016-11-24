@@ -1,132 +1,208 @@
-# string-format
+# strat
+[![NPM](https://img.shields.io/npm/v/strat.svg?style=flat-square)](https://www.npmjs.com/package/strat)
+[![Travis CI](https://img.shields.io/travis/citycide/strat.svg?style=flat-square)](https://travis-ci.org/citycide/strat)
+[![License](https://img.shields.io/npm/l/strat.svg?style=flat-square)](https://www.npmjs.com/package/strat)
+[![JavaScript Standard Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://standardjs.com)
 
-string-format is a small JavaScript library for formatting strings, based on
-Python's [`str.format()`][1]. For example:
+_strat_ is a modern, dependency-free JavaScript library for formatting strings.
+It takes inspiration from Python's [`str.format()`][1] and began as a fork of
+[`string-format`](https://github.com/davidchambers/string-format) before diverging
+with ES2015 source and an auto-curried `format` function.
 
-```javascript
-'"{firstName} {lastName}" <{email}>'.format(user)
-// => '"Jane Smith" <jsmith@example.com>'
+```console
+npm install strat
 ```
 
-The equivalent concatenation:
+### View from the top
 
 ```javascript
-'"' + user.firstName + ' ' + user.lastName + '" <' + user.email + '>'
-// => '"Jane Smith" <jsmith@example.com>'
+format('{name}, {ultimate}, {catchphrase}', hero)
+// -> 'Reinhardt, Earthshatter, "Hammer DOWN!"'
 ```
 
-### Installation
+Compare that to the equivalent string concatenation in ES5:
+
+```javascript
+hero.name + ', ' + hero.ultimate + ', "' + hero.catchphrase + '"'
+```
+
+Or the more modern template literals from ES2015:
+
+```javascript
+`${hero.name}, ${hero.ultimate}, "${hero.catchphrase}"`
+```
+
+But here's the killer feature:
+
+```javascript
+let template = format('{name}, {ultimate}, {catchphrase}')
+
+template(reinhardt)
+// -> 'Reinhardt, Earthshatter, "Hammer DOWN!"'
+template(tracer)
+// -> 'Tracer, Pulse Bomb, "Cheers, love! The cavalry's here!"'
+template(hanzo)
+// -> 'Hanzo, Dragonstrike, "Let the dragon consume you!"'
+```
+
+_strat_'s main function is auto-curried so you can create a reusable template function.
+
+### Usage
+
+_NOTE: strat requires an environment supporting ES2015 syntax like `let` and arrow functions._
 
 #### Node
 
 1.  Install:
 
-        $ npm install string-format
+```console
+npm install strat
+```
 
-2.  Require:
+2.  Import:
 
-        var format = require('string-format')
+```javascript
+import format from 'strat'
+        
+// commonjs / ES5
+const format = require('strat')
+        
+// call it whatever you want for shorter function calls
+import strat from 'strat'
+import fmt from 'strat'
+import _ from 'strat'
+```
 
 #### Browser
 
-1.  Define `window.format`:
+Just drop this repo's `index.js` in as a script tag to expose the `format` function:
 
-        <script src="path/to/string-format.js"></script>
+```html
+<script src="path/to/strat.js"></script>
+<script>
+format('{} {}!', ['Hello', 'world'])
+</script>
+```
 
 ### Modes
 
-string-format can be used in two modes: [function mode](#function-mode) and
-[method mode](#method-mode).
+_strat_ can actually be used in two modes:
+- [function mode](#function-mode)
+- [method mode](#method-mode)
 
 #### Function mode
 
 ```javascript
-format('Hello, {}!', 'Alice')
-// => 'Hello, Alice!'
+format('You got- you gotta run {}.', 'Morty')
+// -> 'You got- you gotta run Morty.'
+
+format(`You really gotta {} these {}, right?`, ['love', 'examples'])
+// -> 'You really gotta love these examples, right?'
 ```
 
-In this mode the first argument is a template string and the remaining
-arguments are values to be interpolated.
+This is the recommended and standard way to use _strat_. Here, the first
+argument is your template string. The second argument is an Array of replacement
+values, or just a single value.
+
+The second argument can optionally be left out, in which case a new function
+will be returned that you can call with your replacement parameters.
+
+```javascript
+let template = format('Like {} and {}')
+template(['salt', 'pepper'])
+// -> 'Like salt and pepper'
+template(['peanut butter', 'jelly'])
+// -> 'Like peanut butter and jelly'
+```
 
 #### Method mode
 
 ```javascript
-'Hello, {}!'.format('Alice')
-// => 'Hello, Alice!'
+'You got- you gotta run {}.'.format('Morty')
+// -> 'You got- you gotta run Morty.'
+
+`You really gotta {} these {}, right?`.format(['love', 'examples'])
+// -> 'You really gotta love these examples, right?'
 ```
 
-In this mode values to be interpolated are supplied to the `format` method
-of a template string. This mode is not enabled by default. The method must
-first be defined via [`format.extend`](#formatextendprototype-transformers):
+This mode is _not_ enabled by default. If you want to use it as
+shown above, you must first use [`format.extend`](#formatextendprototype-transformers):
 
 ```javascript
-format.extend(String.prototype, {})
+format.extend(String.prototype)
 ```
 
-`format(template, $0, $1, …, $N)` and `template.format($0, $1, …, $N)` can then
+`format(template, [...values])` and `template.format([...values])` can then
 be used interchangeably.
 
-### `format(template, $0, $1, …, $N)`
+**Important Note**
+You should probably **not** use this unless you are developing an application.
+If you are developing a library this will affect end users who have no control
+over your extension of the built-in `String.prototype`.
 
-Returns the result of replacing each `{…}` placeholder in the template string
-with its corresponding replacement.
+### API
+
+#### `format(template: string, replacements: string | [...values]): string`
+
+Returns the result of replacing each `{…}` placeholder in the template 
+string with its corresponding replacement.
 
 Placeholders may contain numbers which refer to positional arguments:
 
 ```javascript
-'{0}, you have {1} unread message{2}'.format('Holly', 2, 's')
+format('{0}, you have {1} unread message{2}', ['Holly', 2, 's'])
 // => 'Holly, you have 2 unread messages'
 ```
 
 Unmatched placeholders produce no output:
 
 ```javascript
-'{0}, you have {1} unread message{2}'.format('Steve', 1)
-// => 'Steve, you have 1 unread message'
+format('{0}, you have {1} unread message{2}', ['Steve', 1])
+// -> 'Steve, you have 1 unread message'
 ```
 
 A format string may reference a positional argument multiple times:
 
 ```javascript
-"The name's {1}. {0} {1}.".format('James', 'Bond')
-// => "The name's Bond. James Bond."
+format(`The name's {1}. {0} {1}.`, ['James', 'Bond'])
+// -> "The name's Bond. James Bond."
 ```
 
 Positional arguments may be referenced implicitly:
 
 ```javascript
-'{}, you have {} unread message{}'.format('Steve', 1)
-// => 'Steve, you have 1 unread message'
+format('{}, you have {} unread message{}', ['Steve', 1])
+// -> 'Steve, you have 1 unread message'
 ```
 
 A format string must not contain both implicit and explicit references:
 
 ```javascript
-'My name is {} {}. Do you like the name {0}?'.format('Lemony', 'Snicket')
-// => ValueError: cannot switch from implicit to explicit numbering
+format('My name is {} {}. Do you like the name {0}?', ['Lemony', 'Snicket'])
+// -> Error: cannot mix implicit & explicit formatting
 ```
 
-`{{` and `}}` in format strings produce `{` and `}`:
+Escape `{` and `}` characters by doubling it ( ie. `{{` and `}}` produce `{` and `}` ):
 
 ```javascript
-'{{}} creates an empty {} in {}'.format('dictionary', 'Python')
-// => '{} creates an empty dictionary in Python'
+format('{{}} creates an empty {} {}', ['object', 'literal'])
+// => '{} creates an empty object literal'
 ```
 
 Dot notation may be used to reference object properties:
 
 ```javascript
-var bobby = {firstName: 'Bobby', lastName: 'Fischer'}
-var garry = {firstName: 'Garry', lastName: 'Kasparov'}
+let rick = { firstName: 'Rick', lastName: 'Sanchez' }
+let morty = { firstName: 'Morty', lastName: 'Smith' }
 
-'{0.firstName} {0.lastName} vs. {1.firstName} {1.lastName}'.format(bobby, garry)
-// => 'Bobby Fischer vs. Garry Kasparov'
+format('{0.firstName} {0.lastName} and {1.firstName} {1.lastName}', [rick, morty])
+// => 'Rick Sanchez and Morty Smith'
 ```
 
 `0.` may be omitted when referencing a property of `{0}`:
 
 ```javascript
-var repo = {owner: 'davidchambers', slug: 'string-format'}
+var repo = { owner: 'davidchambers', slug: 'string-format' }
 
 'https://github.com/{owner}/{slug}'.format(repo)
 // => 'https://github.com/davidchambers/string-format'
@@ -136,27 +212,61 @@ If the referenced property is a method, it is invoked with no arguments to
 determine the replacement:
 
 ```javascript
-var sheldon = {
-  firstName:  'Sheldon',
-  lastName:   'Cooper',
-  dob:        new Date('1970-01-01'),
-  fullName:   function() { return '{firstName} {lastName}'.format(this) },
-  quip:       function() { return 'Bazinga!' }
+let reacher = {
+  firstName:   'Jack',
+  lastName:    'Reacher',
+  dob:         new Date('1960-10-29'),
+  fullName:    () => format('{firstName} {lastName}', this),
+  movieSequel: () => format('{fullName}: never go back', this)
 }
 
-'{fullName} was born at precisely {dob.toISOString}'.format(sheldon)
-// => 'Sheldon Cooper was born at precisely 1970-01-01T00:00:00.000Z'
+format('{fullName} was born {dob.toISOString}.', reacher)
+// -> 'Jack Reacher was born 1960-10-29T00:00:00.000Z.'
+// ... you probably shouldn't know that by the way
 
-"I've always wanted to go to a goth club. {quip.toUpperCase}".format(sheldon)
-// => "I've always wanted to go to a goth club. BAZINGA!"
+format('Definitely watch {movieSequel.toUpperCase}', reacher)
+// -> 'Definitely watch JACK REACHER: NEVER GO BACK'
 ```
 
-### `format.extend(prototype, transformers)`
+To pass arguments to a method, pass them as a comma delimited list, with
+a space after the method name:
 
-This function takes a prototype (presumably `String.prototype`) and an object
-mapping names to transformers, and defines a `format` method on the prototype.
-A transformer is applied if its name appears, prefixed with `!`, after a field
-name in a template string.
+```javascript
+let person = {
+  react (tired, mood) {
+    if (tired) {
+      if (mood === 'sad') return 'cried'
+      return 'rolled his eyes'
+    } else {
+      if (mood === 'mad') return 'broke stuff'
+      return 'shook his fist'
+    }
+  }
+}
+
+format('Average Joe {react true, indifferent}.', person)
+// -> 'Average Joe rolled his eyes.'
+```
+
+Note that all arguments are passed as strings, so you'll need to parse them
+as needed if you need, for example, a number  or boolean.
+
+However, you can use `_` to pass the falsy `null` value in the argument list:
+
+```javascript
+format('Average Joe {react _, mad}.', person)
+// -> 'Average Joe broke stuff.'
+```
+
+### `format.extend(object: Object, transformers?: { ...functions })`
+
+This function can be used to extend any object (usually `String.prototype`) with
+a `format` method. The second argument is optional, and is an object containing
+transformer functions that you can use in `format()` to modify string replacements.
+
+To use a transformer, call it by prefixing it with `!` after the field name in the
+template string. For example, `{reaction!exclaim}` where `exclaim` was previously
+passed in the `transformers` object. See below:
 
 ```javascript
 format.extend(String.prototype, {
@@ -165,19 +275,19 @@ format.extend(String.prototype, {
       return '&#' + c.charCodeAt(0) + ';'
     })
   },
-  upper: function(s) { return s.toUpperCase() }
+  exclaim: str => str.toUpperCase() + '!'
 })
 
-'Hello, {!upper}!'.format('Alice')
-// => 'Hello, ALICE!'
+format('Hello, {!exclaim}', 'world')
+// -> 'Hello, WORLD!'
 
-var restaurant = {
+let restaurant = {
   name: 'Anchor & Hope',
   url: 'http://anchorandhopesf.com/'
 }
 
-'<a href="{url!escape}">{name!escape}</a>'.format(restaurant)
-// => '<a href="http://anchorandhopesf.com/">Anchor &#38; Hope</a>'
+format('<a href="{url!escape}">{name!escape}</a>', restaurant)
+// -> '<a href="http://anchorandhopesf.com/">Anchor &#38; Hope</a>'
 ```
 
 ### Running the test suite
@@ -189,4 +299,3 @@ $ npm test
 
 
 [1]: http://docs.python.org/library/stdtypes.html#str.format
-[2]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
