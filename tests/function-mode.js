@@ -111,13 +111,6 @@ test('allows property shorthand for the first positional argument', t => {
   t.is(result, expected)
 })
 
-test('invokes methods', t => {
-  t.is(format('{0.toLowerCase}', ['TINY BOOM']), 'tiny boom')
-  t.is(format('{0.toUpperCase}', ['huge boom']), 'HUGE BOOM')
-  t.is(format('{0.getFullYear}', [new Date('13 Sep 1994')]), '1994')
-  t.is(format('{pop} {pop} {pop}', [['one', 'two', 'three']]), 'three two one')
-})
-
 test(`maintains basic semantic compatibility with Python's API`, t => {
   t.is(format('', ''), '')
   t.is(format('abc', ''), 'abc')
