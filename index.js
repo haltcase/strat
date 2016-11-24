@@ -82,10 +82,10 @@
 
     return obj
   }
-  
+
   function parseMethodArgs (keyArray) {
-  	return keyArray
-    	.slice(1)
+    return keyArray
+      .slice(1)
       .join(' ')
       .split(/,\s*/g)
       .map(v => {
