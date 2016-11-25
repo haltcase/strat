@@ -126,7 +126,7 @@ template(['peanut butter', 'jelly'])
 ```
 
 This mode is _not_ enabled by default. If you want to use it as
-shown above, you must first use [`format.extend`](#formatextendprototype-transformers):
+shown above, you must first use [`format.extend`](#formatextendobject-object-transformers--functions-):
 
 ```javascript
 format.extend(String.prototype)
@@ -294,7 +294,7 @@ import { create } from 'strat'
 const { create } = require('strat')
 ```
 
-See [`format.extend`](#formatextendprototype-transformers) for a more involved
+See [`format.extend`](#formatextendobject-object-transformers--functions-) for a more involved
 example.
 
 ### `format.extend(object: Object, transformers?: { ...functions })`
