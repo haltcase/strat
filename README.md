@@ -87,7 +87,7 @@ format('{} {}!', ['Hello', 'world'])
 ### Modes
 
 _strat_ can actually be used in two modes:
-- [function mode](#function-mode)
+- [function mode](#function-mode) _(recommended)_
 - [method mode](#method-mode)
 
 #### Function mode
@@ -136,13 +136,14 @@ format.extend(String.prototype)
 be used interchangeably.
 
 **Important Note**
+
 You should probably **not** use this unless you are developing an application.
 If you are developing a library this will affect end users who have no control
 over your extension of the built-in `String.prototype`.
 
 ### API
 
-#### `format(template: string, replacements: string | [...values]): string`
+#### `format(template: string, replacements: any | [...values]): string`
 
 Returns the result of replacing each `{…}` placeholder in the template 
 string with its corresponding replacement.
@@ -151,7 +152,7 @@ Placeholders may contain numbers which refer to positional arguments:
 
 ```javascript
 format('{0}, you have {1} unread message{2}', ['Holly', 2, 's'])
-// => 'Holly, you have 2 unread messages'
+// -> 'Holly, you have 2 unread messages'
 ```
 
 Unmatched placeholders produce no output:
@@ -186,7 +187,7 @@ Escape `{` and `}` characters by doubling it ( ie. `{{` and `}}` produce `{` and
 
 ```javascript
 format('{{}} creates an empty {} {}', ['object', 'literal'])
-// => '{} creates an empty object literal'
+// -> '{} creates an empty object literal'
 ```
 
 Dot notation may be used to reference object properties:
@@ -196,16 +197,20 @@ let rick = { firstName: 'Rick', lastName: 'Sanchez' }
 let morty = { firstName: 'Morty', lastName: 'Smith' }
 
 format('{0.firstName} {0.lastName} and {1.firstName} {1.lastName}', [rick, morty])
-// => 'Rick Sanchez and Morty Smith'
+// -> 'Rick Sanchez and Morty Smith'
 ```
 
 `0.` may be omitted when referencing a property of `{0}`:
 
 ```javascript
-var repo = { owner: 'davidchambers', slug: 'string-format' }
+let song = {
+  title: 'Handlebars',
+  artist: 'Flobots',
+  album: 'Fight With Tools'
+}
 
-'https://github.com/{owner}/{slug}'.format(repo)
-// => 'https://github.com/davidchambers/string-format'
+format('{title} | [{artist}] | {album}', song)
+// -> 'Handlebars | Flobots | Fight With Tools'
 ```
 
 If the referenced property is a method, it is invoked with no arguments to
@@ -258,15 +263,45 @@ format('Average Joe {react _, mad}.', person)
 // -> 'Average Joe broke stuff.'
 ```
 
+### `format.create(transformers?: { ...functions })`
+
+You can create a new instance of _strat_ by calling `format.create()`. You may
+also optionally supply an Object containing transformer functions that you can
+use in `format()` to modify string replacements.
+
+Transformers are functions taking a single string argument ( the parameter on
+which it is being used ) and should return the string to be interpolated.
+
+To use a transformer, call it by prefixing it with `!` after the field name in
+the template string. For example, `{reaction!exclaim}` where `exclaim` was
+previously passed in the `transformers` object. See below:
+
+```javascript
+let instance = format.create({
+  exclaim: str => str.toUpperCase() + '!'
+})
+
+format('Hello, {!exclaim}', 'world')
+// -> 'Hello, WORLD!'
+```
+
+If you'll be using `create()` exclusively in a module / file, consider importing
+it by itself:
+
+```javascript
+import { create } from 'strat'
+
+const { create } = require('strat')
+```
+
+See [`format.extend`](#formatextendprototype-transformers) for a more involved
+example.
+
 ### `format.extend(object: Object, transformers?: { ...functions })`
 
 This function can be used to extend any object (usually `String.prototype`) with
 a `format` method. The second argument is optional, and is an object containing
-transformer functions that you can use in `format()` to modify string replacements.
-
-To use a transformer, call it by prefixing it with `!` after the field name in the
-template string. For example, `{reaction!exclaim}` where `exclaim` was previously
-passed in the `transformers` object. See below:
+transformer functions.
 
 ```javascript
 format.extend(String.prototype, {
@@ -274,20 +309,16 @@ format.extend(String.prototype, {
     return s.replace(/[&<>"'`]/g, function(c) {
       return '&#' + c.charCodeAt(0) + ';'
     })
-  },
-  exclaim: str => str.toUpperCase() + '!'
+  }
 })
 
-format('Hello, {!exclaim}', 'world')
-// -> 'Hello, WORLD!'
-
-let restaurant = {
-  name: 'Anchor & Hope',
-  url: 'http://anchorandhopesf.com/'
+let store = {
+  name: 'Barnes & Noble',
+  url: 'https://www.barnesandnoble.com/'
 }
 
-format('<a href="{url!escape}">{name!escape}</a>', restaurant)
-// -> '<a href="http://anchorandhopesf.com/">Anchor &#38; Hope</a>'
+format('<a href="{url!escape}">{name!escape}</a>', store)
+// -> '<a href="https://www.barnesandnoble.com/">Barnes &#38; Noble</a>'
 ```
 
 ### Running the test suite
