@@ -285,15 +285,6 @@ format('Hello, {!exclaim}', 'world')
 // -> 'Hello, WORLD!'
 ```
 
-If you'll be using `create()` exclusively in a module / file, consider importing
-it by itself:
-
-```javascript
-import { create } from 'strat'
-
-const { create } = require('strat')
-```
-
 See [`format.extend`](#formatextendobject-object-transformers--functions-) for a more involved
 example.
 
