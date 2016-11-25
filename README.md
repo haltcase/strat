@@ -308,7 +308,7 @@ let store = {
   url: 'https://www.barnesandnoble.com/'
 }
 
-format('<a href="{url!escape}">{name!escape}</a>', store)
+'<a href="{url!escape}">{name!escape}</a>'.format(store)
 // -> '<a href="https://www.barnesandnoble.com/">Barnes &#38; Noble</a>'
 ```
 
