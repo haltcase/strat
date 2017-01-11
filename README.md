@@ -53,25 +53,25 @@ _NOTE: strat requires an environment supporting ES2015 syntax like `let` and arr
 
 #### Node
 
-1.  Install:
+1. Install:
 
-```console
-npm install strat
-```
+   ```console
+   npm install strat
+   ```
 
-2.  Import:
+2. Import:
 
-```javascript
-import format from 'strat'
-        
-// commonjs / ES5
-const format = require('strat')
-        
-// call it whatever you want for shorter function calls
-import strat from 'strat'
-import fmt from 'strat'
-import _ from 'strat'
-```
+   ```javascript
+   import format from 'strat'
+           
+   // commonjs / ES5
+   const format = require('strat')
+           
+   // call it whatever you want for shorter function calls
+   import strat from 'strat'
+   import fmt from 'strat'
+   import _ from 'strat'
+   ```
 
 #### Browser
 
