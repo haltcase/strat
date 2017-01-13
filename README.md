@@ -210,7 +210,7 @@ let song = {
 }
 
 format('{title} | [{artist}] | {album}', song)
-// -> 'Handlebars | Flobots | Fight With Tools'
+// -> 'Handlebars | [Flobots] | Fight With Tools'
 ```
 
 If the referenced property is a method, it is invoked with no arguments to
