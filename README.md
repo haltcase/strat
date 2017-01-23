@@ -5,6 +5,9 @@ It takes inspiration from Python's [`str.format()`][pythonref] but is focused
 more on being at home in ES2015+ JavaScript than strictly adhering to Python's
 conventions.
 
+If you want stricter Python conventions, check out [string-format][string-format],
+on which this project was based.
+
 ## features
 
 - formatting is curried, allowing for reusable template functions
@@ -339,4 +342,5 @@ a PR. For large changes it helps to open an issue for discussion first.
 
 MIT © Bo Lingen / citycide
 
+[string-format]: https://github.com/davidchambers/string-format
 [pythonref]: http://docs.python.org/library/stdtypes.html#str.format
