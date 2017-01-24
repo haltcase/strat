@@ -227,8 +227,8 @@ let reacher = {
   firstName:   'Jack',
   lastName:    'Reacher',
   dob:         new Date('1960-10-29'),
-  fullName:    () => format('{firstName} {lastName}', this),
-  movieSequel: () => format('{fullName}: never go back', this)
+  fullName:    function () { return format('{firstName} {lastName}', this) },
+  movieSequel: function () { return format('{fullName}: never go back', this) }
 }
 
 format('{fullName} was born {dob.toISOString}.', reacher)
