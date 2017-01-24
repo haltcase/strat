@@ -8,6 +8,8 @@ conventions.
 If you want stricter Python conventions, check out [string-format][string-format],
 on which this project was based.
 
+**try it live** on [JS Bin](http://jsbin.com/tasezi/edit?js,console)
+
 ## features
 
 - formatting is curried, allowing for reusable template functions
@@ -43,10 +45,18 @@ on which this project was based.
 Just drop this repo's `index.js` in as a script tag to expose the `format` function:
 
 ```html
-<script src="path/to/strat.js"></script>
+<script src="path/to/strat/index.js"></script>
 <script>
 format('{} {}!', ['Hello', 'world'])
 </script>
+```
+
+If you prefer a CDN, you can use [unpkg](https://unpkg.com):
+
+```html
+<script src="https://unpkg.com/strat"></script>
+<!-- or, with a version: -->
+<script src="https://unpkg.com/strat@0.6.0"></script>
 ```
 
 _NOTE: strat requires an environment supporting ES2015 syntax like `let` and
@@ -58,7 +68,7 @@ for other environments._
 
 ### view from the top
 
-```javascript
+```js
 format('{name}, {ultimate}, {catchphrase}', hero)
 // -> 'Reinhardt, Earthshatter, "Hammer DOWN!"'
 ```
@@ -71,7 +81,7 @@ hero.name + ', ' + hero.ultimate + ', "' + hero.catchphrase + '"'
 
 Or the more modern template literals from ES2015:
 
-```jas
+```js
 `${hero.name}, ${hero.ultimate}, "${hero.catchphrase}"`
 ```
 
