@@ -57,7 +57,7 @@
           if (xf == null) {
             return value
           } else if ({}.hasOwnProperty.call(transformers, xf)) {
-            return transformers[xf](value)
+            return transformers[xf](value, key, replacements)
           } else {
             throw new Error(`no transformer named '${xf}'`)
           }

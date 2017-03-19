@@ -38,6 +38,21 @@ test('applies transformers to properties of implicit positional arguments', t =>
   t.is(instance(text, [new Array(2)]), '<a href="/inbox">view messages</a>')
 })
 
+test('transformers receive arguments similar to forEach iteration', t => {
+  let instance = format.create({
+    pluralize (val, key, col) {
+      let unit = key.slice(0, -5)
+      let singular = unit.slice(0, -1)
+      return col[0][unit] === 1 ? singular : unit
+    }
+  })
+
+  let template = instance('{days}{daysLabel!pluralize}')
+
+  t.is(template({ days: 2, daysLabel: 'days' }), '2days')
+  t.is(template({ days: 1, dayslabel: 'days' }), '1day')
+})
+
 test('throws if no such transformer is defined', t => {
   let error = t.throws(() => format('foo-{!toString}-baz', 'bar'), Error)
   t.is(error.message, `no transformer named 'toString'`)
