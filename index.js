@@ -95,27 +95,27 @@
       })
   }
 
-  let format = create({})
+  let strat = create({})
 
-  format.create = create
+  strat.create = create
 
-  format.extend = function (prototype, transformers) {
+  strat.extend = function (prototype, transformers) {
     let $format = create(transformers)
     prototype.format = function (replacements) {
       return $format.apply(global, [this, replacements])
     }
   }
 
-  format.errors = {
+  strat.errors = {
     ERR_ARGS_ARRAY,
     ERR_NUMBERING_MIX
   }
 
   if (typeof module !== 'undefined') {
-    module.exports = format
+    module.exports = strat
   } else if (typeof define === 'function' && define.amd) {
-    define(() => format)
+    define(() => strat)
   } else {
-    global.format = format
+    global.strat = strat
   }
 }.call(this, this))
