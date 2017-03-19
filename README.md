@@ -51,7 +51,7 @@ If you prefer a CDN, you can use [unpkg](https://unpkg.com):
 ```html
 <script src="https://unpkg.com/strat"></script>
 <!-- or, with a version: -->
-<script src="https://unpkg.com/strat@0.6.0"></script>
+<script src="https://unpkg.com/strat@1.0.0-alpha.1"></script>
 ```
 
 _NOTE: strat requires an environment supporting ES2015 syntax like `let` and
