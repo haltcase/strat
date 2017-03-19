@@ -2,9 +2,20 @@
   "name": "strat",
   "version": "0.6.0",
   "description": "Functional-ish JavaScript string formatting, with inspirations from Python.",
-  "author": "Bo Lingen <thecitycide@gmail.com>",
-  "scripts": {
-    "test": "ava"
+  "author": {
+    "name": "Bo Lingen",
+    "email": "thecitycide@gmail.com",
+    "url": "github.com/citycide"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/citycide/strat.git"
+  },
+  "homepage": "https://github.com/citycide/strat",
+  "bugs": "https://github.com/citycide/strat/issues",
+  "engines": {
+    "node": ">=4"
   },
   "keywords": [
     "string",
@@ -19,19 +30,13 @@
     "es6",
     "es2015"
   ],
-  "homepage": "https://github.com/citycide/strat",
-  "bugs": "https://github.com/citycide/strat/issues",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/citycide/strat.git"
-  },
   "files": [
-    "LICENSE",
-    "README.md",
-    "index.js",
-    "package.json"
+    "index.js"
   ],
+  "scripts": {
+    "test": "ava"
+  },
+  "dependencies": {},
   "devDependencies": {
     "ava": "^0.18.2",
     "eslint": "^3.18.0",
@@ -42,7 +47,6 @@
   "ava": {
     "files": [
       "tests/**/*.js"
-    ],
-    "verbose": true
+    ]
   }
 }
