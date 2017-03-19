@@ -29,25 +29,20 @@ on which this project was based.
 2. Import
 
    ```js
-   import format from 'strat'
-           
-   // commonjs / ES5
-   const format = require('strat')
-           
-   // call it whatever you want for shorter function calls
    import strat from 'strat'
-   import fmt from 'strat'
-   import _ from 'strat'
+
+   // commonjs / ES5
+   const strat = require('strat')
    ```
 
 ### browser
 
-Just drop this repo's `index.js` in as a script tag to expose the `format` function:
+Just drop this repo's `index.js` in as a script tag to expose the `strat` function:
 
 ```html
 <script src="path/to/strat/index.js"></script>
 <script>
-format('{} {}!', ['Hello', 'world'])
+strat('{} {}!', ['Hello', 'world'])
 </script>
 ```
 
@@ -69,7 +64,7 @@ for other environments._
 ### view from the top
 
 ```js
-format('{name}, {ultimate}, {catchphrase}', hero)
+strat('{name}, {ultimate}, {catchphrase}', hero)
 // -> 'Reinhardt, Earthshatter, "Hammer DOWN!"'
 ```
 
@@ -85,10 +80,10 @@ Or the more modern template literals from ES2015:
 `${hero.name}, ${hero.ultimate}, "${hero.catchphrase}"`
 ```
 
-But here's the killer feature:
+But the _strat_ function is auto-curried so you can create reusable template functions:
 
 ```js
-let template = format('{name}, {ultimate}, {catchphrase}')
+let template = strat('{name}, {ultimate}, {catchphrase}')
 
 template(reinhardt)
 // -> 'Reinhardt, Earthshatter, "Hammer DOWN!"'
@@ -97,8 +92,6 @@ template(tracer)
 template(hanzo)
 // -> 'Hanzo, Dragonstrike, "Let the dragon consume you!"'
 ```
-
-_strat_'s main function is auto-curried so you can create a reusable template function.
 
 ### modes
 
@@ -109,10 +102,10 @@ _strat_ can actually be used in two modes:
 #### function mode
 
 ```js
-format('You got- you gotta run {}.', 'Morty')
+strat('You got- you gotta run {}.', 'Morty')
 // -> 'You got- you gotta run Morty.'
 
-format(`You really gotta {} these {}, right?`, ['love', 'examples'])
+strat(`You really gotta {} these {}, right?`, ['love', 'examples'])
 // -> 'You really gotta love these examples, right?'
 ```
 
@@ -124,7 +117,7 @@ The second argument can optionally be left out, in which case a new function
 will be returned that you can call with your replacement parameters.
 
 ```js
-let template = format('Like {} and {}')
+let template = strat('Like {} and {}')
 template(['salt', 'pepper'])
 // -> 'Like salt and pepper'
 template(['peanut butter', 'jelly'])
@@ -142,13 +135,13 @@ template(['peanut butter', 'jelly'])
 ```
 
 This mode is _not_ enabled by default. If you want to use it as
-shown above, you must first use [`format.extend`](#formatextendobject-object-transformers--functions-):
+shown above, you must first use [`strat.extend`](#stratextendobject-object-transformers--functions-):
 
 ```js
-format.extend(String.prototype)
+strat.extend(String.prototype)
 ```
 
-`format(template, [...values])` and `template.format([...values])` can then
+`strat(template, [...values])` and `template.format([...values])` can then
 be used interchangeably.
 
 > **Important Note**
@@ -159,50 +152,50 @@ be used interchangeably.
 
 ### api
 
-#### `format(template: string, replacements: any | [...values]): string`
+#### `strat(template: string, replacements: any | [...values]): string`
 
-Returns the result of replacing each `{…}` placeholder in the template 
+Returns the result of replacing each `{…}` placeholder in the template
 string with its corresponding replacement.
 
 Placeholders may contain numbers which refer to positional arguments:
 
 ```js
-format('{0}, you have {1} unread message{2}', ['Holly', 2, 's'])
+strat('{0}, you have {1} unread message{2}', ['Holly', 2, 's'])
 // -> 'Holly, you have 2 unread messages'
 ```
 
 Unmatched placeholders produce no output:
 
 ```js
-format('{0}, you have {1} unread message{2}', ['Steve', 1])
+strat('{0}, you have {1} unread message{2}', ['Steve', 1])
 // -> 'Steve, you have 1 unread message'
 ```
 
 A format string may reference a positional argument multiple times:
 
 ```js
-format(`The name's {1}. {0} {1}.`, ['James', 'Bond'])
+strat(`The name's {1}. {0} {1}.`, ['James', 'Bond'])
 // -> "The name's Bond. James Bond."
 ```
 
 Positional arguments may be referenced implicitly:
 
 ```js
-format('{}, you have {} unread message{}', ['Steve', 1])
+strat('{}, you have {} unread message{}', ['Steve', 1])
 // -> 'Steve, you have 1 unread message'
 ```
 
 A format string must not contain both implicit and explicit references:
 
 ```js
-format('My name is {} {}. Do you like the name {0}?', ['Lemony', 'Snicket'])
+strat('My name is {} {}. Do you like the name {0}?', ['Lemony', 'Snicket'])
 // -> Error: cannot mix implicit & explicit formatting
 ```
 
 Escape `{` and `}` characters by doubling it ( ie. `{{` and `}}` produce `{` and `}` ):
 
 ```js
-format('{{}} creates an empty {} {}', ['object', 'literal'])
+strat('{{}} creates an empty {} {}', ['object', 'literal'])
 // -> '{} creates an empty object literal'
 ```
 
@@ -212,7 +205,7 @@ Dot notation may be used to reference object properties:
 let rick = { firstName: 'Rick', lastName: 'Sanchez' }
 let morty = { firstName: 'Morty', lastName: 'Smith' }
 
-format('{0.firstName} {0.lastName} and {1.firstName} {1.lastName}', [rick, morty])
+strat('{0.firstName} {0.lastName} and {1.firstName} {1.lastName}', [rick, morty])
 // -> 'Rick Sanchez and Morty Smith'
 ```
 
@@ -225,7 +218,7 @@ let song = {
   album: 'Fight With Tools'
 }
 
-format('{title} | [{artist}] | {album}', song)
+strat('{title} | [{artist}] | {album}', song)
 // -> 'Handlebars | [Flobots] | Fight With Tools'
 ```
 
@@ -237,15 +230,15 @@ let reacher = {
   firstName:   'Jack',
   lastName:    'Reacher',
   dob:         new Date('1960-10-29'),
-  fullName:    function () { return format('{firstName} {lastName}', this) },
-  movieSequel: function () { return format('{fullName}: never go back', this) }
+  fullName:    function () { return strat('{firstName} {lastName}', this) },
+  movieSequel: function () { return strat('{fullName}: never go back', this) }
 }
 
-format('{fullName} was born {dob.toISOString}.', reacher)
+strat('{fullName} was born {dob.toISOString}.', reacher)
 // -> 'Jack Reacher was born 1960-10-29T00:00:00.000Z.'
 // ... you probably shouldn't know that by the way
 
-format('Definitely watch {movieSequel.toUpperCase}', reacher)
+strat('Definitely watch {movieSequel.toUpperCase}', reacher)
 // -> 'Definitely watch JACK REACHER: NEVER GO BACK'
 ```
 
@@ -265,7 +258,7 @@ let person = {
   }
 }
 
-format('Average Joe {react true, indifferent}.', person)
+strat('Average Joe {react true, indifferent}.', person)
 // -> 'Average Joe rolled his eyes.'
 ```
 
@@ -275,36 +268,60 @@ as needed if you need, for example, a number  or boolean.
 However, you can use `_` to pass the falsy `null` value in the argument list:
 
 ```js
-format('Average Joe {react _, mad}.', person)
+strat('Average Joe {react _, mad}.', person)
 // -> 'Average Joe broke stuff.'
 ```
 
-#### `format.create(transformers?: { ...functions })`
+#### `strat.create(transformers?: { ...functions })`
 
-You can create a new instance of _strat_ by calling `format.create()`. You may
+You can create a new instance of _strat_ by calling `strat.create()`. You may
 also optionally supply an Object containing transformer functions that you can
-use in `format()` to modify string replacements.
+use in `strat()` to modify string replacements.
 
-Transformers are functions taking a single string argument ( the parameter on
-which it is being used ) and should return the string to be interpolated.
+Transformers are very similar to a function you'd pass to [`Array#map()`][mdn-array-map].
+They receive three arguments: the value on which it's being used, the key, and the full
+collection of replacements provided to the template.
+
+```js
+transform(value: string, key: string, collection: [...values]): string
+```
 
 To use a transformer, call it by prefixing it with `!` after the field name in
 the template string. For example, `{reaction!exclaim}` where `exclaim` was
-previously passed in the `transformers` object. See below:
+previously passed in the `transformers` object.
+
+Here's a simple example operating only on the `value` argument:
 
 ```js
-let instance = format.create({
+let instance = strat.create({
   exclaim: str => str.toUpperCase() + '!'
 })
 
-format('Hello, {!exclaim}', 'world')
+instance('Hello, {!exclaim}', 'world')
 // -> 'Hello, WORLD!'
 ```
 
-See [`format.extend`](#formatextendobject-object-transformers--functions-) for a more involved
+And here's one that uses all three arguments to intelligently pluralize units:
+
+```js
+let instance = strat.create({
+  pluralize (str, key, col) {
+    let unit = key.slice(0, -5)
+    let singular = unit.slice(0, -1)
+    return col[0][unit] === 1 ? singular : unit
+  }
+})
+
+let template = instance('{days}{daysLabel!pluralize}')
+
+template({ days: 1, daysLabel: 'days' }) // -> '1day'
+template({ days: 2, daysLabel: 'days' }) // -> '2days'
+```
+
+See [`strat.extend`](#stratextendobject-object-transformers--functions-) for a more involved
 example.
 
-#### `format.extend(object: Object, transformers?: { ...functions })`
+#### `strat.extend(object: Object, transformers?: { ...functions })`
 
 > **Important Note**
 
@@ -316,10 +333,10 @@ a `format` method. The second argument is optional, and is an object containing
 transformer functions.
 
 ```js
-format.extend(String.prototype, {
-  escape: function(s) {
-    return s.replace(/[&<>"'`]/g, function(c) {
-      return '&#' + c.charCodeAt(0) + ';'
+strat.extend(String.prototype, {
+  escape (str) {
+    return str.replace(/[&<>"'`]/g, v => {
+      return '&#' + v.charCodeAt(0) + ';'
     })
   }
 })
@@ -342,15 +359,16 @@ npm test
 
 ## contributing
 
-Contributions are welcome! Feel free to open an issue or submit a
-pull request.
+Contributions are welcome! Feel free to open an issue if you run into
+trouble, or submit pull requests for proposed changes.
 
 All you need to do is clone the repo, make your changes, and submit
 a PR. For large changes it helps to open an issue for discussion first.
 
 ## license
 
-MIT © Bo Lingen / citycide
+MIT © [Bo Lingen / citycide](https://github.com/citycide)
 
 [string-format]: https://github.com/davidchambers/string-format
 [pythonref]: http://docs.python.org/library/stdtypes.html#str.format
+[mdn-array-map]: https://mdn.io/array/map

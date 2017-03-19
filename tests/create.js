@@ -1,14 +1,14 @@
-import format from '../index'
 import test from 'ava'
+import strat from '..'
 
 let pluralize = num => num === 1 ? '' : 's'
-let instance = format.create({ pluralize })
+let instance = strat.create({ pluralize })
 
 test('format.create() returns an instance with the given transformers', t => {
   let upperReverse = str => str.split('').reverse().join('').toUpperCase()
   let expected = 'gibberish -> ETARGNI UOY SIHT GNIDAER KCUL DOOG'
 
-  let instance = format.create({ upperReverse })
+  let instance = strat.create({ upperReverse })
   let template = instance('gibberish -> {!upperReverse}')
   let result = template('good luck reading this you ingrate')
 
@@ -39,7 +39,7 @@ test('applies transformers to properties of implicit positional arguments', t =>
 })
 
 test('transformers receive arguments similar to forEach iteration', t => {
-  let instance = format.create({
+  let instance = strat.create({
     pluralize (val, key, col) {
       let unit = key.slice(0, -5)
       let singular = unit.slice(0, -1)
@@ -50,10 +50,10 @@ test('transformers receive arguments similar to forEach iteration', t => {
   let template = instance('{days}{daysLabel!pluralize}')
 
   t.is(template({ days: 2, daysLabel: 'days' }), '2days')
-  t.is(template({ days: 1, dayslabel: 'days' }), '1day')
+  t.is(template({ days: 1, daysLabel: 'days' }), '1day')
 })
 
 test('throws if no such transformer is defined', t => {
-  let error = t.throws(() => format('foo-{!toString}-baz', 'bar'), Error)
+  let error = t.throws(() => strat('foo-{!toString}-baz', 'bar'), Error)
   t.is(error.message, `no transformer named 'toString'`)
 })
