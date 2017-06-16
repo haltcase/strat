@@ -8,7 +8,7 @@ conventions.
 If you want stricter Python conventions, check out [string-format][string-format],
 on which this project was based.
 
-**try it live** on [JS Bin](https://jsbin.com/zoyaxevoqu/2/edit?js,console)
+**try it live** on [JS Bin](https://jsbin.com/qeqelatewi/3/edit?js,console)
 
 ## features
 
