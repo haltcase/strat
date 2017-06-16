@@ -12,9 +12,9 @@ on which this project was based.
 
 ## features
 
-- formatting is curried, allowing for reusable template functions
+- formatting can be partially applied, allowing for reusable template functions
 - reference object properties as replacement values
-- object methods are called and can be given arguments
+- object methods are called and can be passed arguments
 
 ## installation
 
@@ -51,7 +51,7 @@ If you prefer a CDN, you can use [unpkg](https://unpkg.com):
 ```html
 <script src="https://unpkg.com/strat"></script>
 <!-- or, with a version: -->
-<script src="https://unpkg.com/strat@1.0.0-alpha.1"></script>
+<script src="https://unpkg.com/strat@1.0.0"></script>
 ```
 
 _NOTE: strat requires an environment supporting ES2015 syntax like `let` and
@@ -80,17 +80,18 @@ Or the more modern template literals from ES2015:
 `${hero.name}, ${hero.ultimate}, "${hero.catchphrase}"`
 ```
 
-But the _strat_ function is auto-curried so you can create reusable template functions:
+But the _strat_ function can also be partially applied to create
+reusable template functions. Just leave out the replacements like so:
 
 ```js
 let template = strat('{name}, {ultimate}, {catchphrase}')
 
 template(reinhardt)
-// -> 'Reinhardt, Earthshatter, "Hammer DOWN!"'
+// -> 'Reinhardt, Earthshatter, "Honor! Glory! REINHARDT!"'
 template(tracer)
 // -> 'Tracer, Pulse Bomb, "Cheers, love! The cavalry's here!"'
 template(hanzo)
-// -> 'Hanzo, Dragonstrike, "Let the dragon consume you!"'
+// -> 'McCree, Deadeye, "Ain't I killed you somewhere before?"'
 ```
 
 ### modes
@@ -192,7 +193,8 @@ strat('My name is {} {}. Do you like the name {0}?', ['Lemony', 'Snicket'])
 // -> Error: cannot mix implicit & explicit formatting
 ```
 
-Escape `{` and `}` characters by doubling it ( ie. `{{` and `}}` produce `{` and `}` ):
+Escape `{` and `}` characters by doubling it ( ie. `{{` and `}}` produce
+`{` and `}` respectively ):
 
 ```js
 strat('{{}} creates an empty {} {}', ['object', 'literal'])
@@ -263,7 +265,7 @@ strat('Average Joe {react true, indifferent}.', person)
 ```
 
 Note that all arguments are passed as strings, so you'll need to parse them
-as needed if you need, for example, a number  or boolean.
+as needed if you need, for example, a number or boolean.
 
 However, you can use `_` to pass the falsy `null` value in the argument list:
 
@@ -318,8 +320,8 @@ template({ days: 1, daysLabel: 'days' }) // -> '1day'
 template({ days: 2, daysLabel: 'days' }) // -> '2days'
 ```
 
-See [`strat.extend`](#stratextendobject-object-transformers--functions-) for a more involved
-example.
+See [`strat.extend`](#stratextendobject-object-transformers--functions-) for a
+more involved example.
 
 #### `strat.extend(object: Object, transformers?: { ...functions })`
 
