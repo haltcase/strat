@@ -1,4 +1,4 @@
-# strat [![NPM](https://img.shields.io/npm/v/strat.svg?style=flat-square)](https://www.npmjs.com/package/strat) [![License](https://img.shields.io/npm/l/strat.svg?style=flat-square)](https://www.npmjs.com/package/strat) [![Travis CI](https://img.shields.io/travis/citycide/strat.svg?style=flat-square)](https://travis-ci.org/citycide/strat) [![JavaScript Standard Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://standardjs.com)
+# strat &middot; [![NPM](https://img.shields.io/npm/v/strat.svg?style=flat-square)](https://www.npmjs.com/package/strat) [![License](https://img.shields.io/npm/l/strat.svg?style=flat-square)](https://www.npmjs.com/package/strat) [![Travis CI](https://img.shields.io/travis/citycide/strat.svg?style=flat-square)](https://travis-ci.org/citycide/strat) [![JavaScript Standard Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://standardjs.com)
 
 _strat_ is a modern, dependency-free JavaScript library for formatting strings.
 It takes inspiration from Python's [`str.format()`][pythonref] but is focused
