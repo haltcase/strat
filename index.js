@@ -1,6 +1,9 @@
 ;(function (global) {
   'use strict'
 
+  const REGEX = /([{}])\1|[{](.*?)(?:!(.+?))?[}]/g
+  const hasOwn = Object.prototype.hasOwnProperty
+
   const ERR_ARGS_ARRAY = 'replacements argument must be an array, not a parameter list'
   const ERR_NUMBERING_MIX = 'cannot mix implicit & explicit formatting'
 
@@ -8,61 +11,56 @@
 
   function create (transformers) {
     return function reformat (template, replacements) {
-      if (replacements != null) {
-        if (!Array.isArray(replacements)) {
-          if (arguments.length > 2) {
-            throw new TypeError(ERR_ARGS_ARRAY)
-          }
-
-          // single argument provided, cast as array
-          replacements = [replacements]
-        }
-      } else {
-        // return a curried function
-        let curried = reformat.bind(null, template)
-        Object.defineProperty(curried, 'raw', {
+      if (replacements == null) {
+        let partial = r => reformat(template, r)
+        return Object.defineProperty(partial, 'raw', {
           configurable: false,
           enumerable: true,
           get: () => template
         })
-        return curried
+      }
+
+      if (!Array.isArray(replacements)) {
+        if (arguments.length > 2) {
+          throw new TypeError(ERR_ARGS_ARRAY)
+        }
+
+        // single argument provided, cast as array
+        replacements = [replacements]
       }
 
       let idx = 0
       let state = 'UNDEFINED'
 
-      return template.replace(
-        /([{}])\1|[{](.*?)(?:!(.+?))?[}]/g,
-        function (match, literal, key, xf) {
-          if (literal != null) return literal
+      return template.replace(REGEX, (match, literal, key, xf) => {
+        if (literal != null) return literal
 
-          if (key.length > 0) {
-            if (state === 'IMPLICIT') {
-              throw new Error(ERR_NUMBERING_MIX)
-            }
-
-            state = 'EXPLICIT'
-          } else {
-            if (state === 'EXPLICIT') {
-              throw new Error(ERR_NUMBERING_MIX)
-            }
-
-            state = 'IMPLICIT'
-            key = String(idx)
-            idx += 1
+        if (key.length > 0) {
+          if (state === 'IMPLICIT') {
+            throw new Error(ERR_NUMBERING_MIX)
           }
 
-          let value = defaultTo('', lookup(replacements, key.split('.')))
-
-          if (xf == null) {
-            return value
-          } else if ({}.hasOwnProperty.call(transformers, xf)) {
-            return transformers[xf](value, key, replacements)
-          } else {
-            throw new Error(`no transformer named '${xf}'`)
+          state = 'EXPLICIT'
+        } else {
+          if (state === 'EXPLICIT') {
+            throw new Error(ERR_NUMBERING_MIX)
           }
+
+          state = 'IMPLICIT'
+          key = String(idx)
+          idx += 1
         }
-      )
+
+        let value = defaultTo('', lookup(replacements, key.split('.')))
+
+        if (xf == null) {
+          return value
+        } else if (hasOwn.call(transformers, xf)) {
+          return transformers[xf](value, key, replacements)
+        } else {
+          throw new Error(`no transformer named '${xf}'`)
+        }
+      })
     }
   }
 
