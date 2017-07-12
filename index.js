@@ -1,3 +1,5 @@
+/* global define */
+
 ;(function (global) {
   'use strict'
 
@@ -7,12 +9,12 @@
   const ERR_ARGS_ARRAY = 'replacements argument must be an array, not a parameter list'
   const ERR_NUMBERING_MIX = 'cannot mix implicit & explicit formatting'
 
-  let defaultTo = (x, y) => y == null ? x : y
+  const defaultTo = (x, y) => y == null ? x : y
 
   function create (transformers) {
     return function reformat (template, replacements) {
       if (replacements == null) {
-        let partial = r => reformat(template, r)
+        const partial = r => reformat(template, r)
         return Object.defineProperty(partial, 'raw', {
           configurable: false,
           enumerable: true,
@@ -70,9 +72,9 @@
     }
 
     for (let idx = 0; idx < path.length; idx += 1) {
-      let key = path[idx]
-      let keyArray = key.split(' ')
-      let fn = keyArray[0]
+      const key = path[idx]
+      const keyArray = key.split(' ')
+      const fn = keyArray[0]
       obj = typeof obj[fn] === 'function'
         ? obj[fn].apply(obj, parseMethodArgs(keyArray))
         : obj[key]
@@ -93,12 +95,12 @@
       })
   }
 
-  let strat = create({})
+  const strat = create({})
 
   strat.create = create
 
   strat.extend = function (prototype, transformers) {
-    let $format = create(transformers)
+    const $format = create(transformers)
     prototype.format = function (replacements) {
       return $format.apply(global, [this, replacements])
     }
