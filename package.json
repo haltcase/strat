@@ -34,18 +34,14 @@
     "index.js"
   ],
   "scripts": {
-    "lint": "eslint index.js",
+    "lint": "standard | snazzy",
     "test": "ava"
   },
   "dependencies": {},
   "devDependencies": {
-    "ava": "^0.19.1",
-    "eslint": "^3.19.0",
-    "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.3.0",
-    "eslint-plugin-node": "^5.0.0",
-    "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "ava": "^0.20.0",
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.2"
   },
   "ava": {
     "files": [
