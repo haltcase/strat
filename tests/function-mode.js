@@ -64,14 +64,6 @@ test('replaces all occurrences of a placeholder', t => {
   t.is(result, expected)
 })
 
-test('# syntax repeats the parameter the given number of times', t => {
-  const template = '{#5}'
-  const expected = 'Buffalo Buffalo Buffalo Buffalo Buffalo '
-  const result = strat(template, 'Buffalo ')
-
-  t.is(result, expected)
-})
-
 test('throws when implicit & explicit parameters are mixed', t => {
   const error = t.throws(() => strat('{} {0}', ['foo', 'bar']), Error)
   t.is(error.message, strat.errors.ERR_NUMBERING_MIX)

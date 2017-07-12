@@ -38,12 +38,6 @@ test('applies transformers to properties of implicit positional arguments', t =>
   t.is(instance(text, [new Array(2)]), '<a href="/inbox">view messages</a>')
 })
 
-test('applies transformers prior to applying repeat', t => {
-  const xf = str => str.toUpperCase() + 'S '
-  const instance = strat.create({ xf })
-  t.is(instance('{!xf#3}', 'shot'), 'SHOTS SHOTS SHOTS ')
-})
-
 test('transformers receive arguments similar to forEach iteration', t => {
   const instance = strat.create({
     pluralize (val, key, col) {
