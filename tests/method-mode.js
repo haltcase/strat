@@ -26,20 +26,20 @@ test('extending `String.prototype` allows calls on arbitrary strings', t => {
   t.is(result, expected)
 })
 
-test('allows currying when called in method mode', t => {
+test('allows partial application when called in method mode', t => {
   if (typeof String.prototype.format !== 'function') {
     format.extend(String.prototype)
   }
 
   /**
-   * Currying is not quite as useful here, since you could
-   * just as easily `let result = ''.format` and then call
-   * that ( which is even less characters in this case ).
+   * Partial application is not _quite_ as useful here, since
+   * the `format()` method is now available on all strings,
+   * so you can just store the string itself as the template.
    */
 
   let expected = 'Prototypes need love too'
-  let curried = '{} need {} too'.format()
-  let result = curried(['Prototypes', 'love'])
+  let partial = '{} need {} too'.format()
+  let result = partial(['Prototypes', 'love'])
 
   t.is(result, expected)
 })
