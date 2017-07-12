@@ -4,7 +4,7 @@
   "description": "Functional-ish JavaScript string formatting, with inspirations from Python.",
   "author": {
     "name": "Bo Lingen",
-    "email": "thecitycide@gmail.com",
+    "email": "lingenbw@gmail.com",
     "url": "github.com/citycide"
   },
   "license": "MIT",
@@ -21,14 +21,12 @@
     "string",
     "formatting",
     "python",
-    "currying",
-    "curried",
+    "partial",
+    "application",
     "language",
     "util",
     "template",
-    "interpolation",
-    "es6",
-    "es2015"
+    "interpolation"
   ],
   "files": [
     "index.js"
