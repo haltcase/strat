@@ -8,7 +8,7 @@ conventions.
 If you want stricter Python conventions, check out [string-format][string-format],
 on which this project was based.
 
-> **try it live** on [**JS Bin**](https://jsbin.com/qeqelatewi/3/edit?js,console)
+> **try it live** on [**runkit**](https://runkit.com/citycide/strat-playground)
 
 ## features
 
@@ -84,13 +84,13 @@ But the _strat_ function can also be partially applied to create
 reusable template functions. Just leave out the replacements like so:
 
 ```js
-let template = strat('{name}, {ultimate}, {catchphrase}')
+const template = strat('{name}, {ultimate}, {catchphrase}')
 
 template(reinhardt)
 // -> 'Reinhardt, Earthshatter, "Honor! Glory! REINHARDT!"'
 template(tracer)
 // -> 'Tracer, Pulse Bomb, "Cheers, love! The cavalry's here!"'
-template(hanzo)
+template(mccree)
 // -> 'McCree, Deadeye, "Ain't I killed you somewhere before?"'
 ```
 
@@ -118,7 +118,7 @@ The second argument can optionally be left out, in which case a new function
 will be returned that you can call with your replacement parameters.
 
 ```js
-let template = strat('Like {} and {}')
+const template = strat('Like {} and {}')
 template(['salt', 'pepper'])
 // -> 'Like salt and pepper'
 template(['peanut butter', 'jelly'])
@@ -128,11 +128,11 @@ template(['peanut butter', 'jelly'])
 #### method mode
 
 ```js
-'You got- you gotta run {}.'.format('Morty')
-// -> 'You got- you gotta run Morty.'
+'Hey man, {} need love too.'.format('prototypes')
+// -> 'Hey man, prototypes need love too.'
 
-`You really gotta {} these {}, right?`.format(['love', 'examples'])
-// -> 'You really gotta love these examples, right?'
+`Gets hard out here for a {}, {}`.format(['prototype', 'son'])
+// -> 'Gets hard out here for a prototype, son.'
 ```
 
 This mode is _not_ enabled by default. If you want to use it as
@@ -204,8 +204,8 @@ strat('{{}} creates an empty {} {}', ['object', 'literal'])
 Dot notation may be used to reference object properties:
 
 ```js
-let rick = { firstName: 'Rick', lastName: 'Sanchez' }
-let morty = { firstName: 'Morty', lastName: 'Smith' }
+const rick = { firstName: 'Rick', lastName: 'Sanchez' }
+const morty = { firstName: 'Morty', lastName: 'Smith' }
 
 strat('{0.firstName} {0.lastName} and {1.firstName} {1.lastName}', [rick, morty])
 // -> 'Rick Sanchez and Morty Smith'
@@ -214,7 +214,7 @@ strat('{0.firstName} {0.lastName} and {1.firstName} {1.lastName}', [rick, morty]
 `0.` may be omitted when referencing a property of `{0}`:
 
 ```js
-let song = {
+const song = {
   title: 'Handlebars',
   artist: 'Flobots',
   album: 'Fight With Tools'
@@ -228,7 +228,7 @@ If the referenced property is a method, it is invoked with no arguments to
 determine the replacement:
 
 ```js
-let reacher = {
+const reacher = {
   firstName:   'Jack',
   lastName:    'Reacher',
   dob:         new Date('1960-10-29'),
@@ -248,7 +248,7 @@ To pass arguments to a method, pass them as a comma delimited list, with
 a space after the method name:
 
 ```js
-let person = {
+const person = {
   react (tired, mood) {
     if (tired) {
       if (mood === 'sad') return 'cried'
@@ -295,7 +295,7 @@ previously passed in the `transformers` object.
 Here's a simple example operating only on the `value` argument:
 
 ```js
-let instance = strat.create({
+const instance = strat.create({
   exclaim: str => str.toUpperCase() + '!'
 })
 
@@ -306,15 +306,15 @@ instance('Hello, {!exclaim}', 'world')
 And here's one that uses all three arguments to intelligently pluralize units:
 
 ```js
-let instance = strat.create({
+const instance = strat.create({
   pluralize (str, key, col) {
-    let unit = key.slice(0, -5)
-    let singular = unit.slice(0, -1)
+    const unit = key.slice(0, -5)
+    const singular = unit.slice(0, -1)
     return col[0][unit] === 1 ? singular : unit
   }
 })
 
-let template = instance('{days}{daysLabel!pluralize}')
+const template = instance('{days}{daysLabel!pluralize}')
 
 template({ days: 1, daysLabel: 'days' }) // -> '1day'
 template({ days: 2, daysLabel: 'days' }) // -> '2days'
@@ -343,7 +343,7 @@ strat.extend(String.prototype, {
   }
 })
 
-let store = {
+const store = {
   name: 'Barnes & Noble',
   url: 'https://www.barnesandnoble.com/'
 }
