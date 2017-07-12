@@ -1,136 +1,144 @@
-import format from '../index'
+import strat from '../index'
 import test from 'ava'
 
-let isObject = v => v === Object(v) && !Array.isArray(v)
+const isObject = v => v === Object(v) && !Array.isArray(v)
 
-test('format is a function with `create` and `extend` methods', t => {
+test('strat is a function with `create` and `extend` methods', t => {
   ;[
-    typeof format,
-    typeof format.create,
-    typeof format.extend
+    typeof strat,
+    typeof strat.create,
+    typeof strat.extend
   ].map(type => t.is(type, 'function'))
 })
 
 test('exposes error constants', t => {
   ;[
-    isObject(format.errors),
-    typeof format.errors.ERR_ARGS_ARRAY === 'string',
-    typeof format.errors.ERR_NUMBERING_MIX === 'string'
+    isObject(strat.errors),
+    typeof strat.errors.ERR_ARGS_ARRAY === 'string',
+    typeof strat.errors.ERR_NUMBERING_MIX === 'string'
   ].map(v => t.true(v))
 })
 
 test('interpolates positional arguments', t => {
-  let template = '{0}, you have {1} unread message{2}'
-  let expected = 'Holly, you have 2 unread messages'
-  let result = format(template, ['Holly', 2, 's'])
+  const template = '{0}, you have {1} unread message{2}'
+  const expected = 'Holly, you have 2 unread messages'
+  const result = strat(template, ['Holly', 2, 's'])
 
   t.is(result, expected)
 })
 
 test('strips unmatched placeholders', t => {
-  let template = '{0}, you have {1} unread message{2}'
-  let expected = 'Steve, you have 1 unread message'
-  let result = format(template, ['Steve', 1])
+  const template = '{0}, you have {1} unread message{2}'
+  const expected = 'Steve, you have 1 unread message'
+  const result = strat(template, ['Steve', 1])
 
   t.is(result, expected)
 })
 
 test('allows sequential indices to be omitted', t => {
-  let template = '{}, you have {} unread message{}'
-  let expected = 'Steve, you have 1 unread message'
-  let result = format(template, ['Steve', 1])
+  const template = '{}, you have {} unread message{}'
+  const expected = 'Steve, you have 1 unread message'
+  const result = strat(template, ['Steve', 1])
 
   t.is(result, expected)
 })
 
-test('returns a curried function when given only a template', t => {
-  let expected = 'step into my parlor, said the spider to the fly'
-  let result = format('step into my {}, said the {} to the {}')
+test('returns a partially applied function when given only a template', t => {
+  const expected = 'step into my parlor, said the spider to the fly'
+  const result = strat('step into my {}, said the {} to the {}')
 
   t.is(typeof result, 'function')
   t.is(result(['parlor', 'spider', 'fly']), expected)
 })
 
-test(`curried functions contain their template as a 'raw' property`, t => {
-  let curried = format(`it's {} noon`)
-  t.is(curried.raw, `it's {} noon`)
+test(`partially applied functions contain their template as a 'raw' property`, t => {
+  const partial = strat(`it's {} noon`)
+  t.is(partial.raw, `it's {} noon`)
 })
 
 test('replaces all occurrences of a placeholder', t => {
-  let template = 'the meaning of life is {0} ({1} x {2} is also {0})'
-  let expected = 'the meaning of life is 42 (6 x 7 is also 42)'
-  let result = format(template, [42, 6, 7])
+  const template = 'the meaning of life is {0} ({1} x {2} is also {0})'
+  const expected = 'the meaning of life is 42 (6 x 7 is also 42)'
+  const result = strat(template, [42, 6, 7])
+
+  t.is(result, expected)
+})
+
+test('# syntax repeats the parameter the given number of times', t => {
+  const template = '{#5}'
+  const expected = 'Buffalo Buffalo Buffalo Buffalo Buffalo '
+  const result = strat(template, 'Buffalo ')
 
   t.is(result, expected)
 })
 
 test('throws when implicit & explicit parameters are mixed', t => {
-  let error = t.throws(() => format('{} {0}', ['foo', 'bar']), Error)
-  t.is(error.message, format.errors.ERR_NUMBERING_MIX)
+  const error = t.throws(() => strat('{} {0}', ['foo', 'bar']), Error)
+  t.is(error.message, strat.errors.ERR_NUMBERING_MIX)
 })
 
 test('throws when not provided a replacement array', t => {
-  let error = t.throws(() => format('', 1, 2), Error)
-  t.is(error.message, format.errors.ERR_ARGS_ARRAY)
+  const error = t.throws(() => strat('', 1, 2), Error)
+  t.is(error.message, strat.errors.ERR_ARGS_ARRAY)
 })
 
 test('allows passing a lone non-Array replacement value', t => {
-  let result = format('{}', 1)
+  const result = strat('{}', 1)
   t.is(result, '1')
 })
 
 test('treats "{{" and "}}" as "{" and "}"', t => {
-  let template = '{{ {}: "{}" }}'
-  let expected = '{ foo: "bar" }'
-  let result = format(template, ['foo', 'bar'])
+  const template = '{{ {}: "{}" }}'
+  const expected = '{ foo: "bar" }'
+  const result = strat(template, ['foo', 'bar'])
 
   t.is(result, expected)
 })
 
 test('supports property access via dot notation', t => {
-  let rick = { first: 'Rick', last: 'Sanchez' }
-  let morty = { first: 'Morty', last: 'Smith' }
+  const rick = { first: 'Rick', last: 'Sanchez' }
+  const morty = { first: 'Morty', last: 'Smith' }
 
-  let template = '{0.first} {0.last} and {1.first} {1.last}'
-  let expected = 'Rick Sanchez and Morty Smith'
-  let result = format(template, [rick, morty])
+  const template = '{0.first} {0.last} and {1.first} {1.last}'
+  const expected = 'Rick Sanchez and Morty Smith'
+  const result = strat(template, [rick, morty])
 
   t.is(result, expected)
 })
 
 test('allows property shorthand for the first positional argument', t => {
-  let rick = {
+  const rick = {
     first: 'Rick',
     catchphrase: 'Wubba lubba dub dub'
   }
 
-  let template = `I'm tiny {first}! {catchphrase}!`
-  let expected = `I'm tiny Rick! Wubba lubba dub dub!`
-  let result = format(template, [rick])
+  const template = `I'm tiny {first}! {catchphrase}!`
+  const expected = `I'm tiny Rick! Wubba lubba dub dub!`
+  const result = strat(template, [rick])
 
   t.is(result, expected)
 })
 
 test(`maintains basic semantic compatibility with Python's API`, t => {
-  t.is(format('', ''), '')
-  t.is(format('abc', ''), 'abc')
-  t.is(format('{0}', 'abc'), 'abc')
-  t.is(format('X {0}', 'abc'), 'X abc')
-  t.is(format('{0} X', 'abc'), 'abc X')
-  t.is(format('X {0} Y', 'abc'), 'X abc Y')
-  t.is(format('{1}', [1, 'abc']), 'abc')
-  t.is(format('X {1}', [1, 'abc']), 'X abc')
-  t.is(format('{1} X', [1, 'abc']), 'abc X')
-  t.is(format('X {1} Y', [1, 'abc']), 'X abc Y')
-  t.is(format('{0}', -15), '-15')
-  t.is(format('{0} {1}', [-15, 'abc']), '-15 abc')
-  t.is(format('{0} X {1}', [-15, 'abc']), '-15 X abc')
-  t.is(format('{{', ''), '{')
-  t.is(format('}}', ''), '}')
-  t.is(format('{{}}', ''), '{}')
-  t.is(format('{{x}}', ''), '{x}')
-  t.is(format('{{{0}}}', 123), '{123}')
-  t.is(format('{{{{0}}}}', ''), '{{0}}')
-  t.is(format('}}{{', ''), '}{')
-  t.is(format('}}x{{', ''), '}x{')
+  t.is(strat('', ''), '')
+  t.is(strat('abc', ''), 'abc')
+  t.is(strat('{0}', 'abc'), 'abc')
+  t.is(strat('X {0}', 'abc'), 'X abc')
+  t.is(strat('{0} X', 'abc'), 'abc X')
+  t.is(strat('X {0} Y', 'abc'), 'X abc Y')
+  t.is(strat('{1}', [1, 'abc']), 'abc')
+  t.is(strat('X {1}', [1, 'abc']), 'X abc')
+  t.is(strat('{1} X', [1, 'abc']), 'abc X')
+  t.is(strat('X {1} Y', [1, 'abc']), 'X abc Y')
+  t.is(strat('{0}', -15), '-15')
+  t.is(strat('{0} {1}', [-15, 'abc']), '-15 abc')
+  t.is(strat('{0} X {1}', [-15, 'abc']), '-15 X abc')
+  t.is(strat('{{', ''), '{')
+  t.is(strat('}}', ''), '}')
+  t.is(strat('{{}}', ''), '{}')
+  t.is(strat('{{x}}', ''), '{x}')
+  t.is(strat('{{{0}}}', 123), '{123}')
+  t.is(strat('{{{{0}}}}', ''), '{{0}}')
+  t.is(strat('}}{{', ''), '}{')
+  t.is(strat('}}x{{', ''), '}x{')
 })
