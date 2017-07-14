@@ -8,7 +8,7 @@ conventions.
 If you want stricter Python conventions, check out [string-format][string-format],
 on which this project was based.
 
-> **try it live** on [**runkit**](https://runkit.com/citycide/strat-playground)
+> **try it live** on [**runkit**](https://npm.runkit.com/strat)
 
 ## features
 
