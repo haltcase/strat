@@ -45,5 +45,6 @@
     "files": [
       "tests/**/*.js"
     ]
-  }
+  },
+  "runkitExampleFilename": "runkit-example.js"
 }
