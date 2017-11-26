@@ -4,7 +4,6 @@
   'use strict'
 
   const REGEX = /([{}])\1|[{](.*?)(?:!(.+?))?[}]/g
-  const hasOwn = Object.prototype.hasOwnProperty
 
   const ERR_ARGS_ARRAY = 'replacements argument must be an array, not a parameter list'
   const ERR_NUMBERING_MIX = 'cannot mix implicit & explicit formatting'
@@ -12,6 +11,8 @@
   const defaultTo = (x, y) => y == null ? x : y
 
   function create (transformers) {
+    transformers = Object.assign({}, transformers)
+
     return function reformat (template, replacements) {
       if (replacements == null) {
         const partial = r => reformat(template, r)
@@ -57,7 +58,7 @@
 
         if (xf == null) {
           return value
-        } else if (hasOwn.call(transformers, xf)) {
+        } else if (transformers.hasOwnProperty(xf)) {
           return transformers[xf](value, key, replacements)
         } else {
           throw new Error(`no transformer named '${xf}'`)
