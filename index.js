@@ -101,8 +101,9 @@
 
   strat.extend = (prototype, transformers) => {
     const format = create(transformers)
-    prototype.format = replacements =>
-      format.apply(global, [this, replacements])
+    prototype.format = function (replacements) {
+      return format.apply(global, [this, replacements])
+    }
   }
 
   strat.errors = {
