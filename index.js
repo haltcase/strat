@@ -4,11 +4,40 @@
   'use strict'
 
   const placeholderRegex = /([{}])\1|[{](.*?)(?:!(.+?))?[}]/g
+  const isNumericRegex = /^\d+$/
+  const commaSpaceRegex = /,\s*/g
 
   const ERR_ARGS_ARRAY = 'replacements argument must be an array, not a parameter list'
   const ERR_NUMBERING_MIX = 'cannot mix implicit & explicit formatting'
 
   const defaultTo = (x, y) => y == null ? x : y
+
+  const parseMethodArgs = keyArray =>
+    keyArray
+      .slice(1)
+      .join(' ')
+      .split(commaSpaceRegex)
+      .map(v => {
+        if (v === '_') return null
+        if (v === '__') return '_'
+        return v
+      })
+
+  const lookup = (obj, path) => {
+    if (!isNumericRegex.test(path[0])) {
+      path = ['0'].concat(path)
+    }
+
+    for (const key of path) {
+      const keyArray = key.split(' ')
+      const fn = keyArray[0]
+      obj = typeof obj[fn] === 'function'
+        ? obj[fn].apply(obj, parseMethodArgs(keyArray))
+        : obj[key]
+    }
+
+    return obj
+  }
 
   function create (transformers) {
     transformers = Object.assign({}, transformers)
@@ -65,35 +94,6 @@
         }
       })
     }
-  }
-
-  function lookup (obj, path) {
-    if (!/^\d+$/.test(path[0])) {
-      path = ['0'].concat(path)
-    }
-
-    for (let idx = 0; idx < path.length; idx += 1) {
-      const key = path[idx]
-      const keyArray = key.split(' ')
-      const fn = keyArray[0]
-      obj = typeof obj[fn] === 'function'
-        ? obj[fn].apply(obj, parseMethodArgs(keyArray))
-        : obj[key]
-    }
-
-    return obj
-  }
-
-  function parseMethodArgs (keyArray) {
-    return keyArray
-      .slice(1)
-      .join(' ')
-      .split(/,\s*/g)
-      .map(v => {
-        if (v === '_') return null
-        if (v === '__') return '_'
-        return v
-      })
   }
 
   const strat = create({})
