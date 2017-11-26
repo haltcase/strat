@@ -3,7 +3,7 @@
 ;(function (global) {
   'use strict'
 
-  const REGEX = /([{}])\1|[{](.*?)(?:!(.+?))?[}]/g
+  const placeholderRegex = /([{}])\1|[{](.*?)(?:!(.+?))?[}]/g
 
   const ERR_ARGS_ARRAY = 'replacements argument must be an array, not a parameter list'
   const ERR_NUMBERING_MIX = 'cannot mix implicit & explicit formatting'
@@ -35,7 +35,7 @@
       let idx = 0
       let state = 'UNDEFINED'
 
-      return template.replace(REGEX, (match, literal, key, xf) => {
+      return template.replace(placeholderRegex, (match, literal, key, xf) => {
         if (literal != null) return literal
 
         if (key.length > 0) {
@@ -54,7 +54,7 @@
           idx += 1
         }
 
-        let value = defaultTo('', lookup(replacements, key.split('.')))
+        const value = defaultTo('', lookup(replacements, key.split('.')))
 
         if (xf == null) {
           return value
@@ -97,14 +97,12 @@
   }
 
   const strat = create({})
-
   strat.create = create
 
-  strat.extend = function (prototype, transformers) {
-    const $format = create(transformers)
-    prototype.format = function (replacements) {
-      return $format.apply(global, [this, replacements])
-    }
+  strat.extend = (prototype, transformers) => {
+    const format = create(transformers)
+    prototype.format = replacements =>
+      format.apply(global, [this, replacements])
   }
 
   strat.errors = {
