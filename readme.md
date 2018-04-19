@@ -12,15 +12,24 @@ on which this project was based.
 
 ## features
 
-- formatting can be partially applied, allowing for reusable template functions
-- reference object properties as replacement values
-- object methods are called and can be passed arguments
+* formatting can be partially applied, allowing for reusable template functions
+* reference object properties as replacement values
+* object methods are called and can be passed arguments
+* TypeScript friendly by shipping with definitions
 
 ## installation
 
 ### node
 
 1. Install
+
+   Using [Yarn][yarn]:
+
+   ```console
+   yarn
+   ```
+
+   Or using npm:
 
    ```console
    npm i strat
@@ -34,6 +43,24 @@ on which this project was based.
    // commonjs / ES5
    const strat = require('strat')
    ```
+
+### typescript
+
+It's recommended that you set `esModuleInterop` to `true` in your TypeScript
+compiler config so that you can use _strat_ as follows:
+
+```ts
+import strat from 'strat'
+```
+
+If you don't set the `esModuleInterop` flag you may need to use this syntax:
+
+```ts
+import strat = require('strat')
+
+// or use commonjs
+const strat = require('strat')
+```
 
 ### browser
 
@@ -51,7 +78,7 @@ If you prefer a CDN, you can use [unpkg](https://unpkg.com):
 ```html
 <script src="https://unpkg.com/strat"></script>
 <!-- or, with a version: -->
-<script src="https://unpkg.com/strat@1.0.0"></script>
+<script src="https://unpkg.com/strat@1.1.0"></script>
 ```
 
 _NOTE: strat requires an environment supporting ES2015 syntax like `let` and
@@ -106,12 +133,12 @@ _strat_ can actually be used in two modes:
 strat('You got- you gotta run {}.', 'Morty')
 // -> 'You got- you gotta run Morty.'
 
-strat(`You really gotta {} these {}, right?`, ['love', 'examples'])
-// -> 'You really gotta love these examples, right?'
+strat(`When you come to a {} in the road, {}.`, ['fork', 'take it'])
+// -> 'When you come to a fork in the road, take it.'
 ```
 
 This is the recommended and standard way to use _strat_. Here, the first
-argument is your template string. The second argument is an Array of replacement
+argument is your template string. The second argument is an array of replacement
 values, or just a single value.
 
 The second argument can optionally be left out, in which case a new function
@@ -128,15 +155,17 @@ template(['peanut butter', 'jelly'])
 #### method mode
 
 ```js
-'Hey man, {} need love too.'.format('prototypes')
-// -> 'Hey man, prototypes need love too.'
+'Yall got anymore of them... {}?'.format('prototypes')
+// -> 'Yall got anymore of them... prototypes?'
 
 `Gets hard out here for a {}, {}`.format(['prototype', 'son'])
 // -> 'Gets hard out here for a prototype, son.'
 ```
 
-This mode is _not_ enabled by default. If you want to use it as
-shown above, you must first use [`strat.extend`](#stratextendobject-object-transformers--functions-):
+This mode is _not_ enabled by default and is _not_ recommended - extending built in
+prototypes with non-standard methods is generally [considered a bad practice][protoextend]
+and it even [hinders the progress of the language][smooshgate]. If you want to use
+it as shown above, you must first use [`strat.extend`](#stratextendobject-object-transformers--functions-):
 
 ```js
 strat.extend(String.prototype)
@@ -264,8 +293,8 @@ strat('Average Joe {react true, indifferent}.', person)
 // -> 'Average Joe rolled his eyes.'
 ```
 
-Note that all arguments are passed as strings, so you'll need to parse them
-as needed if you need, for example, a number or boolean.
+Note that all arguments are passed as strings, so you'll have to parse them
+appropriately if you need, for example, a number or boolean.
 
 However, you can use `_` to pass the falsy `null` value in the argument list:
 
@@ -277,7 +306,7 @@ strat('Average Joe {react _, mad}.', person)
 #### `strat.create(transformers?: { ...functions })`
 
 You can create a new instance of _strat_ by calling `strat.create()`. You may
-also optionally supply an Object containing transformer functions that you can
+also optionally supply an object containing transformer functions that you can
 use in `strat()` to modify string replacements.
 
 Transformers are very similar to a function you'd pass to [`Array#map()`][mdn-array-map].
@@ -303,7 +332,7 @@ instance('Hello, {!exclaim}', 'world')
 // -> 'Hello, WORLD!'
 ```
 
-And here's one that uses all three arguments to intelligently pluralize units:
+And here's one that uses all three arguments to semi-intelligently pluralize units:
 
 ```js
 const instance = strat.create({
@@ -323,7 +352,7 @@ template({ days: 2, daysLabel: 'days' }) // -> '2days'
 See [`strat.extend`](#stratextendobject-object-transformers--functions-) for a
 more involved example.
 
-#### `strat.extend(object: Object, transformers?: { ...functions })`
+#### `strat.extend(prototype: object, transformers?: { ...functions })`
 
 > **Important Note**
 
@@ -352,20 +381,28 @@ const store = {
 // -> '<a href="https://www.barnesandnoble.com/">Barnes &#38; Noble</a>'
 ```
 
-### tests
+## see also
 
-```console
-npm install
-npm test
-```
+* [`logger-neue`][logger-neue] &ndash; refined logging utility that utilizes _strat_
+
+## development
+
+1. Clone the repo: `git clone https://github.com/citycide/strat.git`
+2. Move into the new directory: `cd strat`
+3. Install dependencies: `yarn` or `npm install`
+4. Run tests: `yarn test` or `npm test`
+5. Test the TypeScript definitions: `yarn test:types` or `npm run test:types`
 
 ## contributing
 
-Contributions are welcome! Feel free to open an issue if you run into
-trouble, or submit pull requests for proposed changes.
+Pull requests and any [issues](https://github.com/citycide/strat/issues)
+found are always welcome.
 
-All you need to do is clone the repo, make your changes, and submit
-a PR. For large changes it helps to open an issue for discussion first.
+1. Fork the project, and preferably create a branch named something like `feat-make-better`
+2. Follow the development steps [above](#development) but using your forked repo
+3. Modify the source files as needed
+4. Make sure all tests continue to pass, and it never hurts to have more tests
+5. Push & pull request! :tada:
 
 ## license
 
@@ -373,4 +410,8 @@ MIT © [Bo Lingen / citycide](https://github.com/citycide)
 
 [string-format]: https://github.com/davidchambers/string-format
 [pythonref]: http://docs.python.org/library/stdtypes.html#str.format
+[yarn]: https://yarnpkg.com
+[protoextend]: http://perfectionkills.com/extending-native-builtins/
+[smooshgate]: https://developers.google.com/web/updates/2018/03/smooshgate
 [mdn-array-map]: https://mdn.io/array/map
+[logger-neue]: https://github.com/citycide/logger-neue
