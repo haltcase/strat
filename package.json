@@ -29,6 +29,7 @@
     "interpolation"
   ],
   "files": [
+    "index.d.ts",
     "index.js",
     "runkit-example.js"
   ],
