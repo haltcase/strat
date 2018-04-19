@@ -33,13 +33,17 @@
   ],
   "scripts": {
     "lint": "standard | snazzy",
-    "test": "ava"
+    "test": "ava",
+    "test:types": "ts-node -O \"{ \"\"esModuleInterop\"\": true }\" tests/types.ts"
   },
   "dependencies": {},
   "devDependencies": {
     "ava": "^0.23.0",
     "snazzy": "^7.0.0",
     "standard": "^10.0.3"
+    "standard": "^10.0.3",
+    "ts-node": "^6.0.0",
+    "typescript": "^2.8.1"
   },
   "ava": {
     "files": [
