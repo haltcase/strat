@@ -29,7 +29,8 @@
     "interpolation"
   ],
   "files": [
-    "index.js"
+    "index.js",
+    "runkit-example.js"
   ],
   "scripts": {
     "lint": "standard | snazzy",
