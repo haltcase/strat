@@ -46,20 +46,10 @@ on which this project was based.
 
 ### typescript
 
-It's recommended that you set `esModuleInterop` to `true` in your TypeScript
-compiler config so that you can use _strat_ as follows:
+Usage in TypeScript is the same as ES2015+ with the addition of all exported types:
 
 ```ts
-import strat from 'strat'
-```
-
-If you don't set the `esModuleInterop` flag you may need to use this syntax:
-
-```ts
-import strat = require('strat')
-
-// or use commonjs
-const strat = require('strat')
+import strat, { Transformer, FormatPartial /*...*/ } from 'strat'
 ```
 
 ### browser
