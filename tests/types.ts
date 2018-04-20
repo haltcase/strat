@@ -1,4 +1,4 @@
-import strat from '..'
+import strat, { FormatPartial } from '..'
 
 const single = strat('{}', 'hi')
 const multiple = strat('{}', ['hi', 'again'])
@@ -9,7 +9,7 @@ const res2 = template1()
 const res3 = template1(null)
 const res4 = template1(undefined)
 
-const template2 = strat('{}', null)
+const template2: FormatPartial<'{}'> = strat('{}', null)
 const template3 = strat('{}', undefined)
 
 const format = strat.create({

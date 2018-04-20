@@ -36,7 +36,7 @@
   "scripts": {
     "lint": "standard | snazzy",
     "test": "ava",
-    "test:types": "ts-node -O \"{ \"\"esModuleInterop\"\": true }\" tests/types.ts",
+    "test:types": "ts-node tests/types.ts",
     "prepublishOnly": "npm test && npm run test:types"
   },
   "dependencies": {},

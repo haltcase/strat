@@ -1,23 +1,23 @@
-type Mixed = string | number | boolean | symbol | object
+export type Mixed = string | number | boolean | symbol | object
 
-type Transformer = (value: string, key: string, collection: any[]) => string
+export type Transformer = (value: string, key: string, collection: any[]) => string
 
-type TransformerMap = {
+export type TransformerMap = {
   [key: string]: Transformer
 }
 
-interface FormatPartial <T extends string> {
+export interface FormatPartial <T extends string> {
   (replacements?: null | undefined): FormatPartial<T>
   (replacements: any): string
   raw: T
 }
 
-interface Format {
+export interface Format {
   <T extends string> (template: T, replacements?: null | undefined): FormatPartial<T>
   (template: string, replacements: any): string
 }
 
-interface Strat {
+export interface Strat {
   <T extends string> (template: T): FormatPartial<T>
 
   <T extends string> (template: T, replacements?: null | undefined): FormatPartial<T>
@@ -37,4 +37,4 @@ interface Strat {
 
 declare const strat: Strat
 
-export = strat
+export default strat

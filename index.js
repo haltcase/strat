@@ -113,6 +113,7 @@
 
   if (typeof module !== 'undefined') {
     module.exports = strat
+    module.exports.default = module.exports
   } else if (typeof define === 'function' && define.amd) {
     define(() => strat)
   } else {
