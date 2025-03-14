@@ -1,0 +1,28 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  code-quality:
+    name: Code quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Check linting
+        run: deno lint
+
+      - name: Check formatting
+        run: deno fmt --check
+
+      - name: Check types
+        run: deno check --doc src tests

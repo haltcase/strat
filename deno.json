@@ -1,0 +1,22 @@
+{
+	"name": "@haltcase/strat",
+	"description": "Functional-ish JavaScript string formatting, with inspirations from Python.",
+	"version": "2.0.0",
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"publish": {
+		"include": ["license", "readme.md", "src/**/*"],
+		"exclude": ["tests/**/*", "**/*.test.ts"]
+	},
+	"imports": {
+		"@deno/dnt": "jsr:@deno/dnt@^0.41.3"
+	},
+	"tasks": {
+		"build-npm": "deno run -A ./scripts/build-npm.ts",
+		"qc": "deno lint --fix && deno fmt && deno check src tests"
+	},
+	"fmt": {
+		"useTabs": true
+	}
+}

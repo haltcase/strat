@@ -1,0 +1,5 @@
+{
+	"[javascript][typescript][markdown]": {
+		"editor.defaultFormatter": "denoland.vscode-deno"
+	}
+}
